@@ -38,7 +38,7 @@ function resolveSystemPathDirs(platform: NodeJS.Platform): string[] {
  * Resolve common user bin directories for Linux.
  * These are paths where npm global installs and node version managers typically place binaries.
  */
-function resolveLinuxUserBinDirs(home: string | undefined): string[] {
+export function resolveLinuxUserBinDirs(home: string | undefined): string[] {
   if (!home) return [];
 
   const dirs: string[] = [];
