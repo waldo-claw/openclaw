@@ -153,7 +153,6 @@ jobs:
     uses: ./.github/workflows/generate-changelog.yml
     with:
       version: ${{ needs.version.outputs.new_version }}
-      commits: ${{ needs.get-commits.outputs.commits }}
       release_type: ${{ needs.determine-params.outputs.release_type }}
 
   # Run full test suite for the release type
@@ -212,7 +211,7 @@ jobs:
   notify-success:
     name: Notify Success
     needs: [determine-params, version, release]
-    if: ${{ always() && needs.release.result == 'success' }}
+    if: ${{ !cancelled() && needs.release.result == 'success' }}
     runs-on: ubuntu-latest
     env:
       DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
@@ -236,7 +235,7 @@ jobs:
     name: Notify Failure
     needs: [determine-params, version, test, deploy, release]
     if: |
-      always() &&
+      !cancelled() &&
       needs.version.result != 'skipped' &&
       (needs.test.result == 'failure' || needs.deploy.result == 'failure' || needs.release.result == 'failure')
     runs-on: ubuntu-latest

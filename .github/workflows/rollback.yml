@@ -182,7 +182,7 @@ jobs:
   create-rollback-release:
     name: Create Rollback Release
     needs: [validate, rollback-npm, rollback-docker]
-    if: always() && needs.validate.result == 'success'
+    if: "!cancelled() && needs.validate.result == 'success'"
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -234,7 +234,7 @@ jobs:
   notify:
     name: Discord Notification
     needs: [validate, rollback-npm, rollback-docker, create-rollback-release]
-    if: always() && needs.validate.result == 'success'
+    if: "!cancelled() && needs.validate.result == 'success'"
     runs-on: ubuntu-latest
     env:
       DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}

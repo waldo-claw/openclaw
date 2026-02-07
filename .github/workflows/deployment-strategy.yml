@@ -282,7 +282,7 @@ jobs:
     name: Deployment Summary
     runs-on: ubuntu-latest
     needs: [npm-publish, docker-manifest]
-    if: always()
+    if: "!cancelled()"
     outputs:
       status: ${{ steps.summary.outputs.status }}
       npm_url: ${{ steps.summary.outputs.npm_url }}
@@ -318,7 +318,7 @@ jobs:
   notify:
     name: Discord Notification
     needs: deploy-summary
-    if: always()
+    if: "!cancelled()"
     runs-on: ubuntu-latest
     env:
       DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}

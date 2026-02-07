@@ -78,7 +78,7 @@ jobs:
     name: Test Summary (${{ inputs.test_stage }})
     runs-on: ubuntu-latest
     needs: [ci, install-smoke]
-    if: always()
+    if: "!cancelled()"
     outputs:
       overall_status: ${{ steps.summary.outputs.overall_status }}
     steps:
@@ -124,7 +124,7 @@ jobs:
   notify:
     name: Discord Notification
     needs: test-summary
-    if: always()
+    if: "!cancelled()"
     runs-on: ubuntu-latest
     env:
       DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}

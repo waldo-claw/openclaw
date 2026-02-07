@@ -41,7 +41,7 @@ concurrency:
   cancel-in-progress: false
 
 permissions:
-  contents: read
+  contents: write
   pull-requests: write
 
 jobs:
@@ -131,7 +131,7 @@ jobs:
     name: Create Promotion PR
     needs: [determine-target, ensure-target-branch, run-tests]
     if: |
-      always() &&
+      !cancelled() &&
       needs.determine-target.outputs.should_promote == 'true' &&
       (needs.run-tests.outputs.test_status == 'passed' || inputs.skip_tests)
     runs-on: ubuntu-latest
@@ -271,7 +271,7 @@ jobs:
   notify-promotion:
     name: Notify Promotion
     needs: [determine-target, create-promotion-pr]
-    if: always() && needs.create-promotion-pr.outputs.pr_url != ''
+    if: "!cancelled() && needs.create-promotion-pr.outputs.pr_url != ''"
     runs-on: ubuntu-latest
     env:
       DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
@@ -295,7 +295,7 @@ jobs:
     name: Notify Test Failure
     needs: [determine-target, run-tests]
     if: |
-      always() &&
+      !cancelled() &&
       needs.run-tests.outputs.test_status != 'passed' &&
       !inputs.skip_tests
     runs-on: ubuntu-latest

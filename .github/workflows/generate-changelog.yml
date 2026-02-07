@@ -7,11 +7,6 @@ on:
         description: "Version for the changelog"
         required: true
         type: string
-      commits:
-        description: "JSON string of commits"
-        required: false
-        type: string
-        default: ""
       release_type:
         description: "Release type: alpha, beta, or stable"
         required: true
